@@ -1,19 +1,21 @@
 # from typing import Union
 from fastapi import HTTPException
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 import requests
 
 app = FastAPI()
 
+client_id = "DoUdME3uqicpqcjLDFby"
+client_secret = "x6bRjFWQ92EbqzaxmgKI3GgLqCb1ZbQ2XVB6WkiT"
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+
+@app.post("/")
+async def token(form_data: OAuth2PasswordRequestForm = Depends()):
+    return {'access_token' : form_data.username + 'token'}
+
 @app.get("/")
-def read_root():
-    response = requests.get("https://api.vk.com/method/users.get?user_id=210700286&v=5.131")
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(response.json)
-        raise HTTPException(status_code=400, detail="Ошибка в запросе!")
-
-
-# uvicorn main:app --reload
+async def index(token: str = Depends(oauth2_scheme)):
+    return {'the_token' : token}
