@@ -1,21 +1,29 @@
 # from typing import Union
 from fastapi import HTTPException
-from fastapi import FastAPI, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 import requests
+from fastapi import FastAPI, Depends
+from urllib.parse import urlencode
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 app = FastAPI()
 
-client_id = "DoUdME3uqicpqcjLDFby"
-client_secret = "x6bRjFWQ92EbqzaxmgKI3GgLqCb1ZbQ2XVB6WkiT"
+def post_token():
+    the_data = {
+    "client_id": "DoUdME3uqicpqcjLDFby",
+    "client_secret": "x6bRjFWQ92EbqzaxmgKI3GgLqCb1ZbQ2XVB6WkiT",
+    "grant_type": "client_credentials"
+    }
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    response = requests.post("https://api.avito.ru/token/", data=the_data, headers=headers)
+    return response.json()["access_token"]
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+@app.get("/token")
+def get_token():
+    return post_token()
 
-@app.post("/")
-async def token(form_data: OAuth2PasswordRequestForm = Depends()):
-    return {'access_token' : form_data.username + 'token'}
-
-@app.get("/")
-async def index(token: str = Depends(oauth2_scheme)):
-    return {'the_token' : token}
+@app.get("/getchats")
+def get_chats():
+    bearer = "Bearer " + post_token()
+    headers2 = {"Authorization": bearer}
+    response2 = requests.get("https://api.avito.ru/messenger/v2/accounts/304053114/chats", headers=headers2)
+    return response2.json()
