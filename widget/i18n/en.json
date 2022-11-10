@@ -1,14 +1,14 @@
 {
     "widget":{
-        "name":"MyWidget",
-        "short_description":"Short description",
+        "name":"AvtChat EN",
+        "short_description":"Simply AVito Chat EN",
         "description":"Full description",
         "tour_description":"Tour description"
     },
     "settings":{
         "login":"User login",
         "api_key":"API key",
-        "account":"Account"
+        "account":"demeiz"
     },
     "advanced":{
         "title":"Settings menu item title"

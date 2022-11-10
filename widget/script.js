@@ -20,8 +20,7 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
         return true;
       },
       init: _.bind(function () {
-        console.log('init');
-
+        console.log('Виджет работает успешно!');
         AMOCRM.addNotificationCallback(self.get_settings().widget_code, function (data) {
           console.log(data)
         });
